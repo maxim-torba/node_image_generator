@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "args-parser": "^1.1.0",
-    "fabric": "^2.4.0"
+    "fabric": "^2.4.0",
+    "request": "^2.88.0"
   }
 }

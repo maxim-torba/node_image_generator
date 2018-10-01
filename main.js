@@ -2,6 +2,7 @@ const args = require("args-parser")(process.argv);
 const fabric = require('fabric').fabric;
 const fs = require('fs');
 const {exec} = require('child_process');
+const request = require('request');
 
 // let output = JSON.parse(args.output);
 let configurations = JSON.parse(args.configurations);
@@ -48,13 +49,27 @@ async function renderCanvasFromCustomization(customization, configuration, imgNa
 
     for (let obj of customization.custom_object_group.custom_objects) {
         if (obj.type === 'image') {
-            await new Promise((resolve, reject) => {
-                new fabric.Image.fromObject(obj.image, (img) => {
-                    canvas.add(img);
-                    canvas.renderAll();
-                    resolve();
+            if (obj.image.imgType === 'src/imgs/raster') {
+                await new Promise((resolve, reject) => {
+                    new fabric.Image.fromObject(obj.image, (img) => {
+                        canvas.add(img);
+                        canvas.renderAll();
+                        resolve();
+                    });
                 });
-            });
+            } else if (obj.image.imgType === 'src/imgs/vector') {
+                await new Promise((resolve, reject) => {
+                    request(obj.image.src, {json: false}, (err, res, body) => {
+                        fabric.loadSVGFromString(body, (options, objects) => {
+                            let img = fabric.util.groupSVGElements(options, objects);
+                            Object.assign(img, obj.image);
+                            canvas.add(img);
+                            canvas.renderAll();
+                            resolve();
+                        });
+                    });
+                });
+            }
         } else if (obj.type === 'i-text') {
             await new Promise((resolve, reject) => {
                 new fabric.IText.fromObject(obj.text, (text) => {
