@@ -1,6 +1,7 @@
 const args = require("args-parser")(process.argv);
 const fabric = require('fabric').fabric;
 const fs = require('fs');
+const {exec} = require('child_process');
 // console.log(JSON.parse( args.output));
 let output = JSON.parse(args.output);
 let configurations = JSON.parse(args.configurations);
@@ -33,11 +34,13 @@ async function setFistTemplate() {
             setOverlay(resolve, img);
         });
     });
+
     await new Promise((resolve, reject) => {
         fabric.Image.fromObject(first_template.background, (img) => {
             setBackground(resolve, img);
         });
     });
+
     for (let obj of first_customization.custom_object_group.custom_objects) {
         if (obj.type === 'image') {
             await new Promise((resolve, reject) => {
@@ -65,7 +68,7 @@ setFistTemplate();
 
 function setOverlay(resolve, overlayImage) {
     canvas.setOverlayImage(overlayImage, () => {
-        canvas.renderAll.bind(canvas);
+        canvas.renderAll();
 
         /*   let zoom = canvas.getWidth() / overlayImage.width;
            canvas.setZoom(zoom);
@@ -73,41 +76,41 @@ function setOverlay(resolve, overlayImage) {
 
         typeof resolve !== 'undefined' && resolve();
     });
-    /*
-        , {
-            originX: 'left',
-            originY: 'top',
-            crossOrigin: 'anonymous',
-        }*/
 }
 
 function setBackground(resolve, backgroundImage) {
     canvas.setBackgroundImage(backgroundImage, () => {
-        canvas.renderAll.bind(canvas);
-        /*
-
-                let zoom = canvas.getWidth() / overlayImage.width;
-                canvas.setZoom(zoom);
-                console.log('overlay sets');
-        */
-
+        canvas.renderAll();
         typeof resolve !== 'undefined' && resolve();
     });
-    /*
-        , {
-            originX: 'left',
-            originY: 'top',
-            crossOrigin: 'anonymous',
-        }*/
 }
 
 
 function makeImage() {
-    // console.log(canvas.toDataURL());
     canvas.renderAll();
+
     let out = fs.createWriteStream(__dirname + '/out.png');
     let stream = canvas.createPNGStream();
-    stream.on('data', function (chunk) {
+
+    stream.on('data', (chunk) => {
         out.write(chunk);
+    });
+
+    stream.on('end', () => {
+        console.log('finished');
+        openImage();//for testing
+    });
+}
+
+function openImage() {
+    exec('open out.png', (err, stdout, stderr) => {
+        if (err) {
+            // node couldn't execute the command
+            return;
+        }
+
+        // the *entire* stdout and stderr (buffered)
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
     });
 }
