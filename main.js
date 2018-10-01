@@ -105,7 +105,7 @@ function setBackground(resolve, backgroundImage) {
 function makeImage() {
     // console.log(canvas.toDataURL());
     canvas.renderAll();
-    let out = fs.createWriteStream(__dirname + '/out.png');
+    let out = fs.createWriteStream(__dirname + '/out_of_date.png');
     let stream = canvas.createPNGStream();
     stream.on('data', function (chunk) {
         out.write(chunk);
