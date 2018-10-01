@@ -15,6 +15,7 @@ for (let i in templateCustomizations) {
     }
     let customization = templateCustomizations[i];
     let configuration = templateConfigurations[i];
+
     // let imgName = `${new Date().getTime()}_${i}_.png`;
     let imgName = `${i}_.png`;
     renderCanvasFromCustomization(customization, configuration, imgName);
@@ -33,6 +34,10 @@ async function renderCanvasFromCustomization(customization, configuration, imgNa
         fabric.Image.fromObject(configuration.overlay, (img) => {
             setOverlay(resolve, img, canvas);
         });
+    });
+
+    await new Promise((resolve, reject) => {
+        setWorkspace(configuration.workspace, canvas, resolve);
     });
 
     await new Promise((resolve, reject) => {
@@ -73,6 +78,32 @@ function setOverlay(resolve, overlayImage, canvas) {
         canvas.renderAll();
         typeof resolve !== 'undefined' && resolve();
     });
+}
+
+function setWorkspace(obj, canvas, resolve) {
+    if (obj.type === 'circle') {
+        new fabric.Circle.fromObject(obj, (workspace) => {
+            typeof resolve !== 'undefined' && resolve();
+            clipCanvas(workspace, canvas);
+        });
+    } else if (obj.type === 'rect') {
+        new fabric.Rect.fromObject(obj, (workspace) => {
+            typeof resolve !== 'undefined' && resolve();
+            clipCanvas(workspace, canvas);
+        });
+    } else if (obj.type) {
+        new fabric.Path.fromObject(obj, (workspace) => {
+            typeof resolve !== 'undefined' && resolve();
+            clipCanvas(workspace, canvas);
+        });
+    }
+}
+
+function clipCanvas(workspace, canvas) {
+    workspace.objectCaching = false;
+    canvas.clipTo = (ctx) => {
+        workspace.render(ctx);
+    };
 }
 
 function setBackground(resolve, backgroundImage, canvas) {
