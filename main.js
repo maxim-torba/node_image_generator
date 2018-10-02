@@ -5,10 +5,16 @@ const {exec} = require('child_process');
 const request = require('request');
 
 // let output = JSON.parse(args.output);
-let configurations = JSON.parse(args.configurations);
+let configurationsText = fs.readFileSync('node_image_command_one_side_marking.txt', 'utf-8');//for testing
+
+// let configurations = JSON.parse(args.configurations);
+
+let configurations = JSON.parse(configurationsText);
 
 let templateConfigurations = configurations.template_configurations;
 let templateCustomizations = configurations.configurations;
+
+let tmp_merge_marking = true;
 
 for (let i in templateCustomizations) {
     if (!templateCustomizations.hasOwnProperty(i)) {
@@ -22,7 +28,7 @@ for (let i in templateCustomizations) {
     renderCanvasFromCustomization(customization, configuration, imgName);
 }
 
-async function renderCanvasFromCustomization(customization, configuration, imgName) {
+async function renderCanvasFromCustomization(customization, configuration, imgName) {//TODO check id of configuration bound
     let width = configuration.overlay.width;
     let height = configuration.overlay.height;
 
@@ -54,7 +60,29 @@ async function renderCanvasFromCustomization(customization, configuration, imgNa
                     new fabric.Image.fromObject(obj.image, (img) => {
                         canvas.add(img);
                         canvas.renderAll();
-                        resolve();
+                        if (tmp_merge_marking) {
+                            let markingSVG = obj.image.markingCanvasSVG;
+                            fabric.loadSVGFromString(markingSVG, (options, objects) => {
+                                let group = new fabric.Group();
+                                group.set({
+                                    width: img.width,
+                                    height: img.height,
+                                    left: img.left,
+                                    top: img.top,
+                                    opacity: 0.4,
+                                    originX: 'center',
+                                    originY: 'center'
+                                });
+
+                                let svg = fabric.util.groupSVGElements(options, objects);
+                                group.add(svg);
+                                canvas.add(group);
+                                canvas.renderAll();
+                                resolve();
+                            });
+                        } else {
+                            resolve();
+                        }
                     });
                 });
             } else if (obj.image.imgType === 'src/imgs/vector') {
@@ -71,12 +99,20 @@ async function renderCanvasFromCustomization(customization, configuration, imgNa
                 });
             }
         } else if (obj.type === 'i-text') {
+            /*   await new Promise((resolve, reject) => {
+                   new fabric.IText.fromObject(obj.text, (text) => {
+                       canvas.add(text);
+                       canvas.renderAll();
+                       resolve();
+                   });
+               });*/
             await new Promise((resolve, reject) => {
-                new fabric.IText.fromObject(obj.text, (text) => {
-                    canvas.add(text);
-                    canvas.renderAll();
-                    resolve();
-                });
+                let text = new fabric.Text(obj.text.text);
+                text.setOptions(obj.text);
+                canvas.add(text);
+                canvas.renderAll();
+                // console.log('obj.text.top: ', obj.text.top, 'text.top: ', text.top, 'text.scaleY: ', text.scaleY, 'obj.text.scaleY', obj.text.scaleY);
+                resolve();
             });
         }
     }
@@ -148,8 +184,6 @@ function openImage(name) {
         if (err) {
             return;
         }
-
-        // the *entire* stdout and stderr (buffered)
         console.log(`stdout: ${stdout}`);
         console.log(`stderr: ${stderr}`);
     });
