@@ -61,25 +61,7 @@ async function renderCanvasFromCustomization(customization, configuration, imgNa
                         canvas.add(img);
                         canvas.renderAll();
                         if (tmp_merge_marking) {
-                            let markingSVG = obj.image.markingCanvasSVG;
-                            fabric.loadSVGFromString(markingSVG, (options, objects) => {
-                                let group = new fabric.Group();
-                                group.set({
-                                    width: img.width,
-                                    height: img.height,
-                                    left: img.left,
-                                    top: img.top,
-                                    opacity: 0.4,
-                                    originX: 'center',
-                                    originY: 'center'
-                                });
-
-                                let svg = fabric.util.groupSVGElements(options, objects);
-                                group.add(svg);
-                                canvas.add(group);
-                                canvas.renderAll();
-                                resolve();
-                            });
+                            setMarking(resolve, img, canvas);
                         } else {
                             resolve();
                         }
@@ -164,7 +146,33 @@ function setBackground(resolve, backgroundImage, canvas) {
     });
 }
 
+function setMarking(resolve, image, canvas) {
+    let width = image.width * image.scaleX + 20;
+    let height = image.height * image.scaleY + 20;
+
+    let base64Marking = getBase64FromMarking(image.markingCanvasJson, width, height);
+    // let svgMarking = getSvgFromMarking(image.markingCanvasJson, width, height);
+
+    // console.log('base64: ', base64Marking, '\n svgMarking: ', svgMarking);
+
+    fabric.Image.fromURL(base64Marking, (markingImage) => {
+        markingImage.set({
+            left: image.left,
+            top: image.top,
+            opacity: 0.4,
+            scaleX: 0.95,
+            scaleY: 0.95,
+            stroke: 'black',
+            strokeWidth: 1
+        });
+        canvas.add(markingImage);
+        canvas.renderAll();
+        resolve();
+    });
+}
+
 function makeImage(name, canvas, resolve) {
+    //  console.log(JSON.stringify(canvas.toJSON()));
     let out = fs.createWriteStream(__dirname + `/images/${name}`);
     let stream = canvas.createPNGStream();
 
@@ -175,11 +183,29 @@ function makeImage(name, canvas, resolve) {
     stream.on('end', () => {
         console.log('finished');
         typeof resolve !== 'undefined' && resolve();
-        // openImage(name);//for testing
+        // openGeneratedImage(name);//for testing
     });
 }
 
-function openImage(name) {
+function getBase64FromMarking(json, width, height) {
+    let canvas = new fabric.Canvas(null, {
+        width,
+        height,
+    });
+    canvas.loadFromJSON(json);
+    return canvas.toDataURL();
+}
+
+function getSvgFromMarking(json, width, height) {
+    let canvas = new fabric.Canvas(null, {
+        width,
+        height
+    });
+    canvas.loadFromJSON(json);
+    return canvas.toSVG();
+}
+
+function openGeneratedImage(name) {
     exec(`cd images && open ${name}`, (err, stdout, stderr) => {
         if (err) {
             return;
