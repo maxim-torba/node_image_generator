@@ -5,11 +5,22 @@ const {exec} = require('child_process');
 const request = require('request');
 
 // let output = JSON.parse(args.output);
+// let configurationsText = fs.readFileSync('node_image_command_one_side_marking.txt', 'utf-8');//for testing
 let configurationsText = fs.readFileSync('node_image_command_one_side_marking.txt', 'utf-8');//for testing
+// let configurationsText = fs.readFileSync('template_configuration_2_sides.json', 'utf-8');//for testing
 
 // let configurations = JSON.parse(args.configurations);
 
-let configurations = JSON.parse(configurationsText);
+let configurations;
+
+try {
+    configurations = JSON.parse(configurationsText);
+    // console.log('configurations', configurations);
+    // process.exit();
+} catch (e) {
+    console.error(e);
+    // process.exit();
+}
 
 let templateConfigurations = configurations.template_configurations;
 let templateCustomizations = configurations.configurations;
@@ -147,8 +158,12 @@ function setBackground(resolve, backgroundImage, canvas) {
 }
 
 function setMarking(resolve, image, canvas) {
-    let width = image.width * image.scaleX + 20;
-    let height = image.height * image.scaleY + 20;
+    // let width = image.width * image.scaleX;// + 20;
+    // let height = image.height * image.scaleY;// + 20;
+    let width = image.getScaledWidth();
+    let height = image.getScaledHeight();
+    let minX = image.oCoords.tl.x;
+    let minY = image.oCoords.tl.y;
 
     let base64Marking = getBase64FromMarking(image.markingCanvasJson, width, height);
     // let svgMarking = getSvgFromMarking(image.markingCanvasJson, width, height);
@@ -157,11 +172,11 @@ function setMarking(resolve, image, canvas) {
 
     fabric.Image.fromURL(base64Marking, (markingImage) => {
         markingImage.set({
-            left: image.left,
-            top: image.top,
+            left: minX,
+            top: minY,
             opacity: 0.4,
-            scaleX: 0.95,
-            scaleY: 0.95,
+            /*        scaleX: 0.95,
+                    scaleY: 0.95,*/
             stroke: 'black',
             strokeWidth: 1
         });

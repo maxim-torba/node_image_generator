@@ -1,4 +1,4 @@
-{
+ {
   "name": "node_image_generator",
   "version": "1.0.0",
   "description": "",
@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "args-parser": "^1.1.0",
-    "fabric": "^2.3.4",
+    "fabric": "^2.7.0",
     "request": "^2.88.0"
   }
 }

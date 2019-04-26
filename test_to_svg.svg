@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="960.0160000000001" height="798" viewBox="0 0 1280 1063.98227" xml:space="preserve">
+<desc>Created with Fabric.js 2.7.0</desc>
+<defs>
+<clipPath id="CLIPPATH_4" >
+	<path transform="matrix(0.7194 0 0 0.64954 639.23159 511.46194) translate(-499.95, -500)" id="127" d="M 164.7 10 h 670.5 v 980 H 164.7 V 10 z" stroke-linecap="round" />
+</clipPath>
+</defs>
+<g clip-path="url(#CLIPPATH_4)" >
+<g transform="matrix(1 0 0 1 640 512)" id="65"  >
+	<image style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  xlink:href="http://193.168.1.87:8000//storage/templates/backgroundImage/GJrvhVY5DPl5bj94QB2XOcczWRcBEjji0SoToRii.png" x="-640" y="-512" width="1280" height="1024"></image>
+</g>
+<g transform="matrix(0.96472 0 0 0.96472 639.23274 511.4628)" id="513"  >
+	<image style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  xlink:href="http://193.168.1.87:8000//storage/src/imgs/raster/yGUYLXMOSPPXlsUOQXHC6nPJdE61L730hQFxrziC.jpeg" x="-250" y="-187.5" width="500" height="375"></image>
+</g>
+</g>
+<g transform="matrix(1 0 0 1 640 512)" id="127"  >
+	<image style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  xlink:href="http://193.168.1.87:8000//storage/templates/overlayImage/QMpDdHrGiyj0hJg76Dh8DBA7222QPyHzZCXmPIsZ.png" x="-640" y="-512" width="1280" height="1024"></image>
+</g>
+</svg>
