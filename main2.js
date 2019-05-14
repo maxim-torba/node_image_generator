@@ -5,7 +5,8 @@ const {exec} = require('child_process');
 const request = require('request');
 
 // let configurationsText = fs.readFileSync('template_configuration_2_sides5.json', 'utf-8');//for testing
-let configurationsText = fs.readFileSync('template_configuration_2_sides_with_marking7.json', 'utf-8');//for testing
+// let configurationsText = fs.readFileSync('template_configuration_2_sides_with_marking7.json', 'utf-8');//for testing
+let configurationsText = fs.readFileSync('template_configuration_2_sides_usual2.json', 'utf-8');//for testing
 
 let configurations;
 
@@ -48,7 +49,6 @@ async function renderCanvasFromConfiguration(configuration, index) {
     });
 
 
-    // for (let obj of customization.custom_object_group.custom_objects) {
     for (let i = 0; i < configuration.custom_object_group.custom_objects.length; i++) {
         let obj = configuration.custom_object_group.custom_objects[i];
         if (obj.type === 'image') {
@@ -81,24 +81,27 @@ async function renderCanvasFromConfiguration(configuration, index) {
                            });
                        }*/
         } else if (obj.type === 'i-text') {
-            /*     await new Promise((resolve, reject) => {
-                     new fabric.IText.fromObject(obj.text, (text) => {
-                         canvas.add(text);
-                         canvas.renderAll();
-                         resolve();
-                     });
-                 });*/
             await new Promise((resolve, reject) => {
-                let text = new fabric.Text(obj.text.text);
-                text.setOptions(obj.text);
-                // let newTextObj = Object.assign(text, obj.text);
-                // newTextObj.top = newTextObj.top - 10;
-                canvas.add(text);
-                canvas.renderAll();
-                // console.log(text.left, text.top, text.scaleX, text.scaleY);
-                // console.log('obj.text.top: ', obj.text.top, 'text.top: ', text.top, 'text.scaleY: ', text.scaleY, 'obj.text.scaleY', obj.text.scaleY);
-                resolve();
+                obj.text.fontSize = obj.text.fontSize * obj.text.scaleX;
+                obj.text.scaleX = 1;
+                obj.text.scaleY = 1;
+                new fabric.IText.fromObject(obj.text, (text) => {
+                    canvas.add(text);
+                    canvas.renderAll();
+                    resolve();
+                });
             });
+            /*   await new Promise((resolve, reject) => {
+                   let text = new fabric.Text(obj.text.text);
+                   text.setOptions(obj.text);
+                   // let newTextObj = Object.assign(text, obj.text);
+                   // newTextObj.top = newTextObj.top - 10;
+                   canvas.add(text);
+                   canvas.renderAll();
+                   // console.log(text.left, text.top, text.scaleX, text.scaleY);
+                   // console.log('obj.text.top: ', obj.text.top, 'text.top: ', text.top, 'text.scaleY: ', text.scaleY, 'obj.text.scaleY', obj.text.scaleY);
+                   resolve();
+               });*/
         }
     }
 
@@ -151,7 +154,7 @@ function setBackground(resolve, backgroundImage, canvas) {
 }
 
 function makeImageName(index) {
-    return `img_${index}.png`;
+    return `new_img_${index}.png`;
 }
 
 function setMarking(img, resolve) {
