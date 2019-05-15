@@ -6,9 +6,12 @@ const request = require('request');
 
 // let configurationsText = fs.readFileSync('template_configuration_2_sides5.json', 'utf-8');//for testing
 // let configurationsText = fs.readFileSync('template_configuration_2_sides_with_marking7.json', 'utf-8');//for testing
-let configurationsText = fs.readFileSync('template_configuration_2_sides_usual2.json', 'utf-8');//for testing
+let configurationsText = fs.readFileSync('template_configuration_2_sides_usual5.json', 'utf-8');//for testing
 
 let configurations;
+
+let timesFont = new fabric.nodeCanvas.Font('Times New Roman', __dirname + '/fonts/Times.otf');
+let chunkyFont = new fabric.nodeCanvas.Font('Chunky', __dirname + '/fonts/Chunky.otf');
 
 try {
     configurations = JSON.parse(configurationsText).configurations;
@@ -27,10 +30,13 @@ async function renderCanvasFromConfiguration(configuration, index) {
     let width = configuration.overlay.width;
     let height = configuration.overlay.height;
 
-    let canvas = new fabric.Canvas(null, {
+    let canvas = new fabric.StaticCanvas(null, {
         width,
         height
     });
+
+    canvas.contextContainer.addFont(timesFont);
+    canvas.contextContainer.addFont(chunkyFont);
 
     await new Promise((resolve, reject) => {
         fabric.Image.fromObject(configuration.overlay, (img) => {
@@ -81,17 +87,17 @@ async function renderCanvasFromConfiguration(configuration, index) {
                            });
                        }*/
         } else if (obj.type === 'i-text') {
-            await new Promise((resolve, reject) => {
-                obj.text.fontSize = obj.text.fontSize * obj.text.scaleX;
-                obj.text.scaleX = 1;
-                obj.text.scaleY = 1;
+         /*   await new Promise((resolve, reject) => {
+                // obj.text.fontSize = obj.text.fontSize * Math.min(obj.text.scaleX, obj.text.scaleY);
+                // obj.text.scaleX = 1;
+                // obj.text.scaleY = 1;
                 new fabric.IText.fromObject(obj.text, (text) => {
                     canvas.add(text);
                     canvas.renderAll();
                     resolve();
                 });
-            });
-            /*   await new Promise((resolve, reject) => {
+            });*/
+               await new Promise((resolve, reject) => {
                    let text = new fabric.Text(obj.text.text);
                    text.setOptions(obj.text);
                    // let newTextObj = Object.assign(text, obj.text);
@@ -101,7 +107,7 @@ async function renderCanvasFromConfiguration(configuration, index) {
                    // console.log(text.left, text.top, text.scaleX, text.scaleY);
                    // console.log('obj.text.top: ', obj.text.top, 'text.top: ', text.top, 'text.scaleY: ', text.scaleY, 'obj.text.scaleY', obj.text.scaleY);
                    resolve();
-               });*/
+               });
         }
     }
 
