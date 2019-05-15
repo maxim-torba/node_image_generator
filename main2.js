@@ -8,7 +8,7 @@ const request = require('request');
 // let configurationsText = fs.readFileSync('template_configuration_2_sides_with_marking7.json', 'utf-8');//for testing
 let configurationsText = fs.readFileSync('template_configuration_2_sides_usual5.json', 'utf-8');//for testing
 
-let configurations;
+let configurations; g
 
 let timesFont = new fabric.nodeCanvas.Font('Times New Roman', __dirname + '/fonts/Times.otf');
 let chunkyFont = new fabric.nodeCanvas.Font('Chunky', __dirname + '/fonts/Chunky.otf');
