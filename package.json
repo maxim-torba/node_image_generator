@@ -1,7 +1,6 @@
 {
   "name": "node_image_generator",
   "version": "1.0.0",
-  "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,9 +9,20 @@
   "license": "ISC",
   "dependencies": {
     "args-parser": "^1.1.0",
-    "canvas": "^2.3.0",
-    "fabric": "^2.7.0",
+    "canvas": "^2.5.0",
+    "fabric": "^3.0.0",
+    "fontfaceobserver": "^2.1.0",
     "jsdom": "^13.1.0",
     "request": "^2.88.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxim-torba/node_image_generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maxim-torba/node_image_generator/issues"
+  },
+  "homepage": "https://github.com/maxim-torba/node_image_generator#readme",
+  "description": ""
 }

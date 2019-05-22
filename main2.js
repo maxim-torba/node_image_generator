@@ -3,15 +3,31 @@ const fabric = require('fabric').fabric;
 const fs = require('fs');
 const {exec} = require('child_process');
 const request = require('request');
+const fontFaseObserver = require('fontfaceobserver');
 
-// let configurationsText = fs.readFileSync('template_configuration_2_sides5.json', 'utf-8');//for testing
+// let canvas2 = require('canvas');
+// console.log(canvas2);
+
+// global.document = fabric.document;
+// global.window = fabric.window;
+
+// let configurationsText = fs.readFileSync('two_sides_third_version_test.json', 'utf-8');//for testing
+let configurationsText = fs.readFileSync('two_sides_third_version_test_with_fonts.json', 'utf-8');//for testing
 // let configurationsText = fs.readFileSync('template_configuration_2_sides_with_marking7.json', 'utf-8');//for testing
-let configurationsText = fs.readFileSync('template_configuration_2_sides_usual5.json', 'utf-8');//for testing
+// let configurationsText = fs.readFileSync('two_texts_one_image.json', 'utf-8');//for testing
 
-let configurations; g
+let configurations;
 
-let timesFont = new fabric.nodeCanvas.Font('Times New Roman', __dirname + '/fonts/Times.otf');
-let chunkyFont = new fabric.nodeCanvas.Font('Chunky', __dirname + '/fonts/Chunky.otf');
+// let timesFont = new fabric.nodeCanvas.Font('Times New Roman', __dirname + '/fonts/Times.otf');
+// let timesFont = new fabric.nodeCanvas.Font('Times New Roman', __dirname + '/fonts/Times.otf');
+// let chunkyFont = new fabric.nodeCanvas.Font('Chunky', __dirname + '/fonts/Chunky.otf');
+// let architectFont = fabric.nodeCanvas.Font('Chunky', __dirname + '/fonts/Architect.otf');
+// let lobsterFont = fabric.nodeCanvas.Font('Chunky', __dirname + '/fonts/Lobster.otf');
+
+fabric.nodeCanvas.registerFont(__dirname + '/fonts/Lobster.otf', {family: 'Lobster'});
+fabric.nodeCanvas.registerFont(__dirname + '/fonts/Architect.otf', {family: 'Architect'});
+// chunkyFont.addFace(__dirname + '/fonts/Chunky.otf', 'normal');
+
 
 try {
     configurations = JSON.parse(configurationsText).configurations;
@@ -30,13 +46,15 @@ async function renderCanvasFromConfiguration(configuration, index) {
     let width = configuration.overlay.width;
     let height = configuration.overlay.height;
 
-    let canvas = new fabric.StaticCanvas(null, {
+    let canvas = new fabric.Canvas(null, {
         width,
         height
     });
 
-    canvas.contextContainer.addFont(timesFont);
-    canvas.contextContainer.addFont(chunkyFont);
+    // canvas.contextContainer.addFont(timesFont);
+    // canvas.contextContainer.addFont(chunkyFont);
+    // canvas.contextContainer.addFont(architectFont);
+    // canvas.contextContainer.addFont(lobsterFont);
 
     await new Promise((resolve, reject) => {
         fabric.Image.fromObject(configuration.overlay, (img) => {
@@ -87,27 +105,27 @@ async function renderCanvasFromConfiguration(configuration, index) {
                            });
                        }*/
         } else if (obj.type === 'i-text') {
-         /*   await new Promise((resolve, reject) => {
-                // obj.text.fontSize = obj.text.fontSize * Math.min(obj.text.scaleX, obj.text.scaleY);
-                // obj.text.scaleX = 1;
-                // obj.text.scaleY = 1;
-                new fabric.IText.fromObject(obj.text, (text) => {
-                    canvas.add(text);
-                    canvas.renderAll();
-                    resolve();
-                });
-            });*/
-               await new Promise((resolve, reject) => {
-                   let text = new fabric.Text(obj.text.text);
-                   text.setOptions(obj.text);
-                   // let newTextObj = Object.assign(text, obj.text);
-                   // newTextObj.top = newTextObj.top - 10;
-                   canvas.add(text);
-                   canvas.renderAll();
-                   // console.log(text.left, text.top, text.scaleX, text.scaleY);
-                   // console.log('obj.text.top: ', obj.text.top, 'text.top: ', text.top, 'text.scaleY: ', text.scaleY, 'obj.text.scaleY', obj.text.scaleY);
-                   resolve();
-               });
+            /*   await new Promise((resolve, reject) => {
+                   // obj.text.fontSize = obj.text.fontSize * Math.min(obj.text.scaleX, obj.text.scaleY);
+                   // obj.text.scaleX = 1;
+                   // obj.text.scaleY = 1;
+                   new fabric.IText.fromObject(obj.text, (text) => {
+                       canvas.add(text);
+                       canvas.renderAll();
+                       resolve();
+                   });
+               });*/
+            await new Promise((resolve, reject) => {
+                let text = new fabric.Text(obj.text.text);
+                text.setOptions(obj.text);
+                // let newTextObj = Object.assign(text, obj.text);
+                // newTextObj.top = newTextObj.top - 10;
+                canvas.add(text);
+                canvas.renderAll();
+                // console.log(text.left, text.top, text.scaleX, text.scaleY);
+                // console.log('obj.text.top: ', obj.text.top, 'text.top: ', text.top, 'text.scaleY: ', text.scaleY, 'obj.text.scaleY', obj.text.scaleY);
+                resolve();
+            });
         }
     }
 
@@ -160,7 +178,7 @@ function setBackground(resolve, backgroundImage, canvas) {
 }
 
 function makeImageName(index) {
-    return `new_img_${index}.png`;
+    return `super_new_3dot0_some_img_${index}.png`;
 }
 
 function setMarking(img, resolve) {
