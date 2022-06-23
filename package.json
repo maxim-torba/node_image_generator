@@ -12,7 +12,7 @@
     "canvas": "^2.5.0",
     "fabric": "^3.0.0",
     "fontfaceobserver": "^2.1.0",
-    "jsdom": "^13.1.0",
+    "jsdom": "^16.5.0",
     "request": "^2.88.0"
   },
   "devDependencies": {},
